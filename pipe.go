@@ -34,6 +34,14 @@ func (s *Session) UnmarshalXML(data interface{}) (err error) {
 	return xml.NewDecoder(bufrw).Decode(data)
 }
 
+func (s *Session) Print() {
+	var cmds = make([]string, 0, 4)
+	for _, cmd := range s.cmds {
+		cmds = append(cmds, strings.Join(cmd.Args, " "))
+	}
+	s.writePrompt(strings.Join(cmds, " | "))
+}
+
 // start command
 func (s *Session) Start() (err error) {
 	s.started = true
@@ -41,11 +49,7 @@ func (s *Session) Start() (err error) {
 	var wr *io.PipeWriter
 	var length = len(s.cmds)
 	if s.ShowCMD {
-		var cmds = make([]string, 0, 4)
-		for _, cmd := range s.cmds {
-			cmds = append(cmds, strings.Join(cmd.Args, " "))
-		}
-		s.writePrompt(strings.Join(cmds, " | "))
+		s.Print()
 	}
 	for index, cmd := range s.cmds {
 		if index == 0 {
