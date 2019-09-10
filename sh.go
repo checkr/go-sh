@@ -65,6 +65,10 @@ type Session struct {
 }
 
 func (s *Session) writePrompt(args ...interface{}) {
+	if !(s.dir == Dir("") || s.dir == Dir(".")) {
+		color.New(s.PromptColor).Fprintln(s.Stderr, s.PromptTitle, "cd ", s.dir)
+	}
+
 	envStrs := []string{}
 	if s.PromptEnv != nil {
 		for k, v := range s.PromptEnv {
